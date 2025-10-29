@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mikaela Events Packages</title>
+  <style>
+    :root {
+      --primary-color: #ffcc00; /* Vibrant, elegant yellow */
+      --secondary-color: #222222; /* Dark text */
+      --background-color: #ffffff; /* White background */
+      --accent-color: #000000; /* Black */
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--secondary-color);
+      line-height: 1.6;
+      overflow-x: hidden;
+      animation: fadeInBody 1.2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeInBody {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .logo-text {
+      font-size: 3em;
+      font-weight: 700;
+      color: var(--accent-color);
+      letter-spacing: 3px;
+    }
+
+    .package-tag {
+      font-size: 1.2em;
+      color: var(--primary-color);
+      letter-spacing: 3px;
+      margin-top: 10px;
+    }
+
+    /* Package Cards */
+    .packages-section {
+      padding: 60px 0;
+    }
+
+    .package-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .package-card {
+      background: var(--white);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .package-card:nth-child(1) { animation-delay: 0.3s; }
+    .package-card:nth-child(2) { animation-delay: 0.6s; }
+    .package-card:nth-child(3) { animation-delay: 0.9s; }
+
+    .package-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .package-title {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: var(--accent-color);
+    }
+
+    .package-subtitle {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .package-price {
+      font-size: 2em;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin: 15px 0;
+    }
+
+    .package-details {
+      list-style: none;
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    .package-details li {
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee;
+      font-size: 0.95em;
+    }
+
+    .package-details li:last-child {
+      border-bottom: none;
+    }
+
+    /* Common Inclusion Section */
+    .inclusions-section {
+      background: #f9f9f9;
+      padding: 50px 20px;
+      text-align: center;
+      border-top: 2px solid var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+      animation: fadeInUp 1.2s ease forwards;
+      animation-delay: 1s;
+    }
+
+    .inclusions-title {
+      font-size: 1.6em;
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: 25px;
+    }
+
+    .inclusion-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px 30px;
+      list-style: none;
+    }
+
+    .inclusion-item {
+      color: var(--secondary-color);
+      position: relative;
+      font-weight: 500;
+    }
+
+    .inclusion-item::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -4px;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary-color);
+      transition: width var(--transition-speed), left var(--transition-speed);
+    }
+
+    .inclusion-item:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      text-align: center;
+      padding: 60px 20px;
+      animation: fadeInUp 1s ease forwards;
+      animation-delay: 1.2s;
+    }
+
+    .cta-text {
+      font-size: 1.3em;
+      margin-bottom: 25px;
+      color: var(--accent-color);
+    }
+
+    .cta-button {
+      background-color: var(--primary-color);
+      color: var(--accent-color);
+      padding: 15px 40px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1.1em;
+      font-weight: 700;
+      transition: background-color var(--transition-speed), transform var(--transition-speed);
+    }
+
+    .cta-button:hover {
+      background-color: #e6b800;
+      transform: scale(1.05);
+    }
+
+    /* WhatsApp Floating Button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background-color: #25d366;
+      color: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      text-decoration: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      z-index: 999;
+      animation: fadeInUp 1s ease forwards;
+      animation-delay: 1.5s;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      .package-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .package-card {
+        max-width: 90%;
+      }
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="container fade-in">
+    <h1 class="logo-text">MIKAELA EVENTS</h1>
+    <p class="package-tag">WEDDING PACKAGES</p>
+  </header>
+
+  <section class="packages-section container">
+    <div class="package-grid">
+      <div class="package-card">
+        <h2 class="package-title">Silver</h2>
+        <p class="package-subtitle">Semi Outdoor</p>
+        <p class="package-price">K75,000</p>
+        <ul class="package-details">
+          <li>Buffet for 150 pax</li>
+          <li>1 Drink & 1 Water per person</li>
+          <li>Extras at K400 per person</li>
+        </ul>
+      </div>
+
+      <div class="package-card">
+        <h2 class="package-title">Gold</h2>
+        <p class="package-subtitle">Indoor</p>
+        <p class="package-price">K90,000</p>
+        <ul class="package-details">
+          <li>Buffet for 150 pax</li>
+          <li>1 Drink & 1 Water per person</li>
+          <li>Extras at K500 per person</li>
+        </ul>
+      </div>
+
+      <div class="package-card">
+        <h2 class="package-title">Platinum</h2>
+        <p class="package-subtitle">Indoor Luxury</p>
+        <p class="package-price">K120,000</p>
+        <ul class="package-details">
+          <li>Buffet for 150 pax</li>
+          <li>2 Drinks & 2 Water per person</li>
+          <li>Extras at K800 per person</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="inclusions-section fade-in">
+    <h3 class="inclusions-title">All Packages Include:</h3>
+    <ul class="inclusion-list">
+      <li class="inclusion-item">Venue</li>
+      <li class="inclusion-item">Decoration</li>
+      <li class="inclusion-item">Wedding Cake</li>
+      <li class="inclusion-item">PA System</li>
+      <li class="inclusion-item">MC</li>
+      <li class="inclusion-item">Photographer</li>
+      <li class="inclusion-item">Videographer</li>
+    </ul>
+  </section>
+
+  <section class="cta-section fade-in">
+    <p class="cta-text">Your dream wedding starts with Mikaela Events. Let’s make it unforgettable.</p>
+    <a href="#" class="cta-button">Book Your Package Now</a>
+  </section>
+
+  <a
+    href="https://wa.me/260XXXXXXXXX"
+    target="_blank"
+    class="whatsapp-float"
+    aria-label="Chat on WhatsApp"
+  >
+    <i class="fab fa-whatsapp"></i>
+  </a>
+</body>
+</html>
+
