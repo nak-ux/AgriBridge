@@ -1,335 +1,423 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mikaela Events Packages</title>
-  <style>
-    :root {
-      --primary-color: #ffcc00; /* Vibrant, elegant yellow */
-      --secondary-color: #222222; /* Dark text */
-      --background-color: #ffffff; /* White background */
-      --accent-color: #000000; /* Black */
-      --transition-speed: 0.3s;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finest Weddings | Stacking Deck</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
+    <style>
+        /* --- CONFIGURATION --- */
+        :root {
+            --color-midnight: #0B1118;
+            --color-navy: #16202c;
+            --color-terracotta: #C08B73;
+            --color-sand: #EAC9BC;
+            --cursor-size: 20px;
+        }
 
-    body {
-      background-color: var(--background-color);
-      color: var(--secondary-color);
-      line-height: 1.6;
-      overflow-x: hidden;
-      animation: fadeInBody 1.2s ease forwards;
-      opacity: 0;
-    }
+        /* Tailwind Customization */
+        .font-heading { font-family: 'Oswald', sans-serif; }
+        .font-body { font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--color-midnight);
+            color: #f3f4f6;
+            cursor: none; /* Hide default cursor */
+        }
 
-    @keyframes fadeInBody {
-      to {
-        opacity: 1;
-      }
-    }
+        /* --- CUSTOM CURSOR --- */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--cursor-size);
+            height: var(--cursor-size);
+            border: 1px solid var(--color-terracotta);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease-out, background-color 0.2s, width 0.3s, height 0.3s;
+            mix-blend-mode: difference;
+        }
+        #cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 4px;
+            background-color: var(--color-terracotta);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
 
-    .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: fadeInUp 1s ease forwards;
-    }
+        /* Hover States for Cursor */
+        body.hovering #cursor {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(192, 139, 115, 0.2);
+            border-color: transparent;
+        }
 
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        /* --- STACKING CARD LOGIC --- */
+        .card-section {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.5); /* Shadow on top to separate cards */
+        }
+        
+        /* Mobile handling: Allow scrolling inside the card if content is long */
+        @media (max-width: 768px) {
+            .card-section {
+                position: relative; /* Disable sticky on mobile for standard scroll feel */
+                height: auto;
+                min-height: 100vh;
+            }
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        /* --- ANIMATIONS --- */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
-    header {
-      text-align: center;
-      padding: 50px 20px;
-      border-bottom: 2px solid var(--primary-color);
-    }
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .active .reveal-text {
+            transform: translateY(0);
+            opacity: 1;
+        }
 
-    .logo-text {
-      font-size: 3em;
-      font-weight: 700;
-      color: var(--accent-color);
-      letter-spacing: 3px;
-    }
-
-    .package-tag {
-      font-size: 1.2em;
-      color: var(--primary-color);
-      letter-spacing: 3px;
-      margin-top: 10px;
-    }
-
-    /* Package Cards */
-    .packages-section {
-      padding: 60px 0;
-    }
-
-    .package-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 25px;
-    }
-
-    .package-card {
-      background: var(--white);
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 30px;
-      text-align: center;
-      width: 100%;
-      max-width: 340px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-      animation: fadeInUp 1s ease forwards;
-    }
-
-    .package-card:nth-child(1) { animation-delay: 0.3s; }
-    .package-card:nth-child(2) { animation-delay: 0.6s; }
-    .package-card:nth-child(3) { animation-delay: 0.9s; }
-
-    .package-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .package-title {
-      font-size: 1.8em;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: var(--accent-color);
-    }
-
-    .package-subtitle {
-      color: #555;
-      margin-bottom: 10px;
-    }
-
-    .package-price {
-      font-size: 2em;
-      font-weight: 800;
-      color: var(--primary-color);
-      margin: 15px 0;
-    }
-
-    .package-details {
-      list-style: none;
-      text-align: left;
-      margin: 20px 0;
-    }
-
-    .package-details li {
-      padding: 8px 0;
-      border-bottom: 1px dashed #eee;
-      font-size: 0.95em;
-    }
-
-    .package-details li:last-child {
-      border-bottom: none;
-    }
-
-    /* Common Inclusion Section */
-    .inclusions-section {
-      background: #f9f9f9;
-      padding: 50px 20px;
-      text-align: center;
-      border-top: 2px solid var(--primary-color);
-      border-bottom: 2px solid var(--primary-color);
-      animation: fadeInUp 1.2s ease forwards;
-      animation-delay: 1s;
-    }
-
-    .inclusions-title {
-      font-size: 1.6em;
-      font-weight: 600;
-      color: var(--accent-color);
-      margin-bottom: 25px;
-    }
-
-    .inclusion-list {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 15px 30px;
-      list-style: none;
-    }
-
-    .inclusion-item {
-      color: var(--secondary-color);
-      position: relative;
-      font-weight: 500;
-    }
-
-    .inclusion-item::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -4px;
-      width: 0;
-      height: 2px;
-      background-color: var(--primary-color);
-      transition: width var(--transition-speed), left var(--transition-speed);
-    }
-
-    .inclusion-item:hover::after {
-      width: 100%;
-      left: 0;
-    }
-
-    /* CTA Section */
-    .cta-section {
-      text-align: center;
-      padding: 60px 20px;
-      animation: fadeInUp 1s ease forwards;
-      animation-delay: 1.2s;
-    }
-
-    .cta-text {
-      font-size: 1.3em;
-      margin-bottom: 25px;
-      color: var(--accent-color);
-    }
-
-    .cta-button {
-      background-color: var(--primary-color);
-      color: var(--accent-color);
-      padding: 15px 40px;
-      border: none;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 1.1em;
-      font-weight: 700;
-      transition: background-color var(--transition-speed), transform var(--transition-speed);
-    }
-
-    .cta-button:hover {
-      background-color: #e6b800;
-      transform: scale(1.05);
-    }
-
-    /* WhatsApp Floating Button */
-    .whatsapp-float {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background-color: #25d366;
-      color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      text-decoration: none;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease;
-      z-index: 999;
-      animation: fadeInUp 1s ease forwards;
-      animation-delay: 1.5s;
-    }
-
-    .whatsapp-float:hover {
-      transform: scale(1.1);
-    }
-
-    @media (max-width: 768px) {
-      .package-grid {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .package-card {
-        max-width: 90%;
-      }
-    }
-  </style>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        /* --- IMAGE STYLING --- */
+        .hover-zoom-img {
+            transition: transform 0.7s ease;
+        }
+        .group:hover .hover-zoom-img {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-<body>
-  <header class="container fade-in">
-    <h1 class="logo-text">MIKAELA EVENTS</h1>
-    <p class="package-tag">WEDDING PACKAGES</p>
-  </header>
+<body class="font-body selection:bg-terracotta selection:text-midnight">
 
-  <section class="packages-section container">
-    <div class="package-grid">
-      <div class="package-card">
-        <h2 class="package-title">Silver</h2>
-        <p class="package-subtitle">Semi Outdoor</p>
-        <p class="package-price">K75,000</p>
-        <ul class="package-details">
-          <li>Buffet for 150 pax</li>
-          <li>1 Drink & 1 Water per person</li>
-          <li>Extras at K400 per person</li>
-        </ul>
-      </div>
+    <!-- CUSTOM CURSOR ELEMENTS -->
+    <div id="cursor" class="hidden md:block"></div>
+    <div id="cursor-dot" class="hidden md:block"></div>
 
-      <div class="package-card">
-        <h2 class="package-title">Gold</h2>
-        <p class="package-subtitle">Indoor</p>
-        <p class="package-price">K90,000</p>
-        <ul class="package-details">
-          <li>Buffet for 150 pax</li>
-          <li>1 Drink & 1 Water per person</li>
-          <li>Extras at K500 per person</li>
-        </ul>
-      </div>
+    <!-- NAVIGATION (Fixed) -->
+    <nav class="fixed top-0 left-0 w-full p-8 z-50 flex justify-between items-center mix-blend-difference text-white">
+        <a href="#" class="font-heading text-xl tracking-[0.2em] font-bold hoverable">FINEST WEDDINGS</a>
+        <div class="hidden md:flex space-x-8 text-sm tracking-widest uppercase">
+            <a href="#services" class="hover:text-terracotta transition hoverable">Services</a>
+            <a href="#gallery" class="hover:text-terracotta transition hoverable">Gallery</a>
+            <a href="#contact" class="hover:text-terracotta transition hoverable">Inquire</a>
+        </div>
+        <button class="md:hidden text-white hoverable" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </nav>
 
-      <div class="package-card">
-        <h2 class="package-title">Platinum</h2>
-        <p class="package-subtitle">Indoor Luxury</p>
-        <p class="package-price">K120,000</p>
-        <ul class="package-details">
-          <li>Buffet for 150 pax</li>
-          <li>2 Drinks & 2 Water per person</li>
-          <li>Extras at K800 per person</li>
-        </ul>
-      </div>
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="fixed inset-0 bg-midnight z-40 hidden flex-col justify-center items-center space-y-8">
+        <a href="#services" class="text-3xl font-heading text-sand" onclick="this.parentElement.classList.add('hidden')">Services</a>
+        <a href="#gallery" class="text-3xl font-heading text-sand" onclick="this.parentElement.classList.add('hidden')">Gallery</a>
+        <a href="#contact" class="text-3xl font-heading text-sand" onclick="this.parentElement.classList.add('hidden')">Contact</a>
+        <button class="absolute top-8 right-8 text-white" onclick="this.parentElement.classList.add('hidden')">✕</button>
     </div>
-  </section>
 
-  <section class="inclusions-section fade-in">
-    <h3 class="inclusions-title">All Packages Include:</h3>
-    <ul class="inclusion-list">
-      <li class="inclusion-item">Venue</li>
-      <li class="inclusion-item">Decoration</li>
-      <li class="inclusion-item">Wedding Cake</li>
-      <li class="inclusion-item">PA System</li>
-      <li class="inclusion-item">MC</li>
-      <li class="inclusion-item">Photographer</li>
-      <li class="inclusion-item">Videographer</li>
-    </ul>
-  </section>
+    <!-- MAIN STACKING CONTAINER -->
+    <main>
 
-  <section class="cta-section fade-in">
-    <p class="cta-text">Your dream wedding starts with Mikaela Events. Let’s make it unforgettable.</p>
-    <a href="#" class="cta-button">Book Your Package Now</a>
-  </section>
+        <!-- CARD 1: HERO -->
+        <section class="card-section bg-midnight text-sand items-center justify-center relative active-section">
+            <div class="absolute inset-0 z-0 opacity-40">
+                <img src="image 12.jpg" class="w-full h-full object-cover" alt="Hero Background" onerror="this.src='https://placehold.co/1920x1080/0B1118/C08B73?text=Finest+Weddings'">
+            </div>
+            <!-- Overlay Gradient -->
+            <div class="absolute inset-0 z-10 bg-gradient-to-t from-midnight via-transparent to-transparent"></div>
+            
+            <div class="relative z-20 text-center max-w-4xl px-6">
+                <p class="text-terracotta tracking-[0.5em] text-sm uppercase mb-6 reveal-text" style="transition-delay: 100ms;">Est. 2025</p>
+                <h1 class="font-heading text-6xl md:text-9xl font-light uppercase tracking-tighter mb-8 leading-none reveal-text" style="transition-delay: 200ms;">
+                    Unforgettable <br> <span class="text-terracotta font-normal italic">Elegance</span>
+                </h1>
+                <p class="text-gray-400 max-w-xl mx-auto mb-10 text-lg reveal-text" style="transition-delay: 300ms;">
+                    Bespoke wedding planning for the modern romantic. We curate moments that linger in memory forever.
+                </p>
+                <div class="reveal-text" style="transition-delay: 400ms;">
+                    <a href="#services" class="inline-block border border-terracotta text-terracotta px-8 py-3 uppercase tracking-widest text-xs hover:bg-terracotta hover:text-midnight transition duration-300 hoverable">
+                        Explore Services
+                    </a>
+                </div>
+            </div>
+        </section>
 
-  <a
-    href="https://wa.me/260XXXXXXXXX"
-    target="_blank"
-    class="whatsapp-float"
-    aria-label="Chat on WhatsApp"
-  >
-    <i class="fab fa-whatsapp"></i>
-  </a>
+        <!-- CARD 2: SERVICES -->
+        <section id="services" class="card-section bg-navy text-white active-section">
+            <div class="container mx-auto px-6 h-full flex flex-col justify-center">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center h-full py-20">
+                    
+                    <!-- Text Side -->
+                    <div class="md:col-span-4 flex flex-col justify-center h-full z-10">
+                        <span class="text-terracotta text-xs tracking-[0.3em] uppercase mb-4">What We Do</span>
+                        <h2 class="font-heading text-5xl md:text-7xl mb-8 leading-tight">Curated <br>Perfection</h2>
+                        <p class="text-gray-400 mb-12 font-light">
+                            From the initial sketch to the final champagne toast, we handle the complex logistics so you can immerse yourself in the joy.
+                        </p>
+                        
+                        <div class="space-y-8">
+                            <div class="group cursor-pointer hoverable">
+                                <h3 class="font-heading text-2xl mb-2 group-hover:text-terracotta transition">01. Full Planning</h3>
+                                <p class="text-sm text-gray-500 pl-8 border-l border-gray-700 group-hover:border-terracotta transition">Complete vendor management & design.</p>
+                            </div>
+                            <div class="group cursor-pointer hoverable">
+                                <h3 class="font-heading text-2xl mb-2 group-hover:text-terracotta transition">02. Design Production</h3>
+                                <p class="text-sm text-gray-500 pl-8 border-l border-gray-700 group-hover:border-terracotta transition">Floral, lighting, and spatial styling.</p>
+                            </div>
+                            <div class="group cursor-pointer hoverable">
+                                <h3 class="font-heading text-2xl mb-2 group-hover:text-terracotta transition">03. Logistics</h3>
+                                <p class="text-sm text-gray-500 pl-8 border-l border-gray-700 group-hover:border-terracotta transition">Day-of coordination & timeline execution.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Side -->
+                    <div class="md:col-span-8 h-full relative overflow-hidden rounded-lg md:rounded-none">
+                        <div class="grid grid-cols-2 gap-4 h-full">
+                            <div class="space-y-4 pt-12">
+                                <img src="image 1.jpg" class="w-full h-64 object-cover rounded grayscale hover:grayscale-0 transition duration-700" alt="Service 1" onerror="this.src='https://placehold.co/400x600/16202c/C08B73'">
+                                <img src="image 2.jpg" class="w-full h-80 object-cover rounded grayscale hover:grayscale-0 transition duration-700" alt="Service 2" onerror="this.src='https://placehold.co/400x600/16202c/C08B73'">
+                            </div>
+                            <div class="space-y-4">
+                                <img src="image 3.jpg" class="w-full h-80 object-cover rounded grayscale hover:grayscale-0 transition duration-700" alt="Service 3" onerror="this.src='https://placehold.co/400x600/16202c/C08B73'">
+                                <div class="bg-terracotta h-64 w-full rounded flex items-center justify-center p-6 text-midnight">
+                                    <p class="font-heading text-3xl text-center leading-none">"Every detail matters."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 3: MARQUEE & TEAM -->
+        <section class="card-section bg-terracotta text-midnight active-section justify-center">
+            
+            <!-- Scrolling Marquee -->
+            <div class="py-12 bg-midnight text-sand w-full border-y border-sand/20 marquee-container absolute top-0 z-20">
+                <div class="marquee-content">
+                    <span class="text-6xl md:text-8xl font-heading px-8">TIMELESS • BESPOKE • LUXURY • MEMORABLE • </span>
+                    <span class="text-6xl md:text-8xl font-heading px-8">TIMELESS • BESPOKE • LUXURY • MEMORABLE • </span>
+                </div>
+            </div>
+
+            <div class="container mx-auto px-6 pt-32 h-full flex flex-col justify-center">
+                <div class="text-center mb-12">
+                    <h2 class="font-heading text-5xl md:text-6xl mb-4">The Planners</h2>
+                    <p class="text-midnight/70 max-w-xl mx-auto">Meet the dedicated artisans behind your perfect day.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto w-full">
+                    <!-- Team Member 1 -->
+                    <div class="group relative overflow-hidden rounded-lg cursor-pointer hoverable">
+                        <img src="image 4.jpg" class="w-full h-96 object-cover filter sepia transition duration-500 group-hover:filter-none group-hover:scale-105" alt="Team 1" onerror="this.src='https://placehold.co/300x500/0B1118/C08B73'">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-midnight to-transparent text-sand opacity-0 group-hover:opacity-100 transition duration-300">
+                            <h4 class="font-heading text-xl">Sarah Jenkins</h4>
+                            <p class="text-xs uppercase tracking-wider">Lead Planner</p>
+                        </div>
+                    </div>
+                    <!-- Team Member 2 -->
+                    <div class="group relative overflow-hidden rounded-lg cursor-pointer hoverable">
+                        <img src="image 5.jpg" class="w-full h-96 object-cover filter sepia transition duration-500 group-hover:filter-none group-hover:scale-105" alt="Team 2" onerror="this.src='https://placehold.co/300x500/0B1118/C08B73'">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-midnight to-transparent text-sand opacity-0 group-hover:opacity-100 transition duration-300">
+                            <h4 class="font-heading text-xl">Michael Ross</h4>
+                            <p class="text-xs uppercase tracking-wider">Design Director</p>
+                        </div>
+                    </div>
+                    <!-- Team Member 3 -->
+                    <div class="group relative overflow-hidden rounded-lg cursor-pointer hoverable">
+                        <img src="image 6.jpg" class="w-full h-96 object-cover filter sepia transition duration-500 group-hover:filter-none group-hover:scale-105" alt="Team 3" onerror="this.src='https://placehold.co/300x500/0B1118/C08B73'">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-midnight to-transparent text-sand opacity-0 group-hover:opacity-100 transition duration-300">
+                            <h4 class="font-heading text-xl">Elena Vahn</h4>
+                            <p class="text-xs uppercase tracking-wider">Florist</p>
+                        </div>
+                    </div>
+                     <!-- Team Member 4 -->
+                     <div class="group relative overflow-hidden rounded-lg cursor-pointer hoverable">
+                        <img src="image 7.jpg" class="w-full h-96 object-cover filter sepia transition duration-500 group-hover:filter-none group-hover:scale-105" alt="Team 4" onerror="this.src='https://placehold.co/300x500/0B1118/C08B73'">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-midnight to-transparent text-sand opacity-0 group-hover:opacity-100 transition duration-300">
+                            <h4 class="font-heading text-xl">David Chen</h4>
+                            <p class="text-xs uppercase tracking-wider">Logistics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 4: GALLERY (Masonry) -->
+        <section id="gallery" class="card-section bg-midnight text-sand active-section">
+            <div class="container mx-auto px-6 py-20 h-full flex flex-col">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <span class="text-terracotta text-xs tracking-[0.3em] uppercase">Portfolio</span>
+                        <h2 class="font-heading text-5xl md:text-7xl">Visual Stories</h2>
+                    </div>
+                    <div class="hidden md:block text-right">
+                        <p class="text-gray-500 text-sm">Scroll to explore <br>our latest events</p>
+                    </div>
+                </div>
+
+                <!-- Masonry Layout -->
+                <div class="flex-1 overflow-y-auto pb-20 no-scrollbar">
+                    <div class="columns-1 md:columns-3 gap-4 space-y-4">
+                        <div class="break-inside-avoid relative group hoverable">
+                            <img src="image 8.jpg" class="w-full rounded-lg hover:opacity-80 transition duration-300" alt="Gallery 8" onerror="this.src='https://placehold.co/600x800/16202c/C08B73'">
+                        </div>
+                        <div class="break-inside-avoid relative group hoverable">
+                            <img src="image 9.jpg" class="w-full rounded-lg hover:opacity-80 transition duration-300" alt="Gallery 9" onerror="this.src='https://placehold.co/600x400/16202c/C08B73'">
+                            <div class="bg-navy p-4 rounded mt-4">
+                                <p class="font-heading text-xl">The Thompson Estate</p>
+                                <p class="text-xs text-gray-500">October 2024</p>
+                            </div>
+                        </div>
+                        <div class="break-inside-avoid relative group hoverable">
+                            <img src="image 10.jpg" class="w-full rounded-lg hover:opacity-80 transition duration-300" alt="Gallery 10" onerror="this.src='https://placehold.co/600x600/16202c/C08B73'">
+                        </div>
+                        <div class="break-inside-avoid relative group hoverable">
+                            <img src="image 11.jpg" class="w-full rounded-lg hover:opacity-80 transition duration-300" alt="Gallery 11" onerror="this.src='https://placehold.co/600x500/16202c/C08B73'">
+                        </div>
+                        <div class="break-inside-avoid relative group hoverable">
+                            <img src="image 12.jpg" class="w-full rounded-lg hover:opacity-80 transition duration-300" alt="Gallery 12" onerror="this.src='https://placehold.co/600x700/16202c/C08B73'">
+                        </div>
+                        <div class="break-inside-avoid relative group hoverable">
+                            <div class="bg-terracotta p-8 rounded-lg flex flex-col justify-center items-center text-center h-64 hoverable">
+                                <h3 class="font-heading text-4xl text-midnight mb-2">350+</h3>
+                                <p class="text-midnight uppercase tracking-widest text-sm">Weddings Planned</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARD 5: CONTACT -->
+        <section id="contact" class="card-section bg-sand text-midnight items-center justify-center active-section">
+            <div class="container mx-auto px-6 max-w-5xl">
+                <div class="bg-white p-8 md:p-16 shadow-2xl rounded-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        
+                        <div>
+                            <span class="text-terracotta text-xs tracking-[0.3em] uppercase font-bold">Inquire</span>
+                            <h2 class="font-heading text-5xl md:text-6xl mb-6 mt-2">Let's Talk</h2>
+                            <p class="text-gray-600 mb-8 leading-relaxed">
+                                Your vision deserves flawless execution. Tell us about your dream celebration, and let's begin the journey.
+                            </p>
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="font-bold uppercase text-xs tracking-wider mb-1">Email</p>
+                                    <p class="text-xl font-heading hover:text-terracotta transition cursor-pointer hoverable">hello@finestweddings.com</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold uppercase text-xs tracking-wider mb-1">Phone</p>
+                                    <p class="text-xl font-heading hover:text-terracotta transition cursor-pointer hoverable">+1 (555) 000-1234</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form onsubmit="event.preventDefault(); alert('Message Sent!');" class="space-y-6">
+                            <div class="relative">
+                                <input type="text" id="name" required class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-terracotta transition-colors bg-transparent hoverable" placeholder="Your Name">
+                            </div>
+                            <div class="relative">
+                                <input type="email" id="email" required class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-terracotta transition-colors bg-transparent hoverable" placeholder="Email Address">
+                            </div>
+                            <div class="relative">
+                                <textarea id="message" rows="3" required class="w-full border-b-2 border-gray-200 py-3 text-lg focus:outline-none focus:border-terracotta transition-colors bg-transparent resize-none hoverable" placeholder="Tell us about your event"></textarea>
+                            </div>
+                            <button type="submit" class="group relative px-8 py-4 bg-midnight text-sand font-heading tracking-widest uppercase text-sm w-full overflow-hidden hoverable">
+                                <span class="relative z-10 group-hover:text-midnight transition-colors duration-300">Send Inquiry</span>
+                                <div class="absolute inset-0 bg-terracotta transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-out"></div>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+                
+                <footer class="text-center mt-12 text-midnight/50 text-xs uppercase tracking-widest">
+                    &copy; 2025 Finest Weddings. Crafted with Passion.
+                </footer>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- CUSTOM CURSOR LOGIC ---
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        
+        // Only activate custom cursor on desktop to avoid touch issues
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                // Move dot instantly
+                cursorDot.style.left = `${e.clientX}px`;
+                cursorDot.style.top = `${e.clientY}px`;
+                
+                // Move circle with slight delay (css transition handles smoothing)
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+            });
+
+            // Hover effects
+            const hoverables = document.querySelectorAll('.hoverable, a, button, input, textarea');
+            hoverables.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+        }
+
+        // --- REVEAL ANIMATION ON SCROLL ---
+        // Simple Intersection Observer to trigger text reveals
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // We only want to animate in, so we stop observing
+                    // revealObserver.unobserve(entry.target); 
+                } 
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.active-section').forEach(section => {
+            revealObserver.observe(section);
+        });
+
+    </script>
 </body>
 </html>
-
